@@ -40,7 +40,7 @@ def upload_backup_container(container_name, upload_file_path):
     except ResourceExistsError:
         pass
     blob_client = new_container.get_blob_client(
-        container=container_name, blob=Path(upload_file_path).name)
+        container_name, Path(upload_file_path).name)
     try:
         with open(upload_file_path, "rb") as data:
             blob_client.upload_blob(data, blob_type="BlockBlob")
