@@ -30,13 +30,13 @@ def dump_database(database_name):
     return database_bck_path
 
 
-def upload_backup_container(container_name, upload_file_path, database_name):
+def upload_backup_container(container_name, upload_file_path):
     blob_service_client = BlobServiceClient.from_connection_string(
         os.getenv('STORAGE_CONNECTION_STRING'))
     new_container = blob_service_client
     try:
         new_container = blob_service_client.create_container(container_name)
-        time.sleep(15)
+        time.sleep(35)
     except ResourceExistsError:
         pass
     blob_client = new_container.get_blob_client(
