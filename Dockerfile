@@ -6,6 +6,7 @@ ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true
 RUN apt-get update && apt-get install -y postgresql-client
 COPY requirements.txt /
+RUN apt-get update && apt-get install -y postgresql-client
 RUN pip install -r /requirements.txt
 
 COPY . /home/site/wwwroot
