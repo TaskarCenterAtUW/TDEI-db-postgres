@@ -6,7 +6,7 @@ from azure.core.exceptions import ResourceExistsError
 from azure.storage.blob import BlobServiceClient
 from pathlib import Path
 import logging
-
+import time
 
 def dump_database(database_name):
     password = os.getenv('PGPASSWORD')
@@ -36,6 +36,7 @@ def upload_backup_container(container_name, upload_file_path, database_name):
     new_container = blob_service_client
     try:
         new_container = blob_service_client.create_container(container_name)
+        time.sleep(15)
     except ResourceExistsError:
         pass
     blob_client = new_container.get_blob_client(
@@ -55,6 +56,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     database_name = req.params.get("database_name")
     container_name = req.params.get("container_name")
     backup_path = ""
+    if not container_name:
+        container_name = database_name
     try:
         backup_path = dump_database(database_name=database_name)
         upload_backup_container(
