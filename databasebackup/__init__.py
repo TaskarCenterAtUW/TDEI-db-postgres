@@ -61,7 +61,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
         backup_path = dump_database(database_name=database_name)
         upload_backup_container(
-            container_name, backup_path, database_name=database_name)
+            container_name, backup_path)
         return func.HttpResponse(f"Uploaded backup to {container_name} as blob {Path(backup_path).name}")
     except Exception as e:
         logging.error(f"Error {e} while running the backup of {database_name}")
