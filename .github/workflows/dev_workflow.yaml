@@ -2,12 +2,12 @@
 ######### Dev Workflow  ########
 on:
   pull_request:
-    branches: [dev]
+    branches: [main]
     types:
       - closed
   push:
     branches:
-      - dev
+      - main
   workflow_dispatch:
 
 jobs:
