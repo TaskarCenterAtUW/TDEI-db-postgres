@@ -8,6 +8,7 @@ from pathlib import Path
 import logging
 import time
 
+
 def dump_database(database_name):
     password = os.getenv('PGPASSWORD')
     host_name = os.getenv('PGHOST')
@@ -33,14 +34,9 @@ def dump_database(database_name):
 def upload_backup_container(container_name, upload_file_path):
     blob_service_client = BlobServiceClient.from_connection_string(
         os.getenv('STORAGE_CONNECTION_STRING'))
-    new_container = blob_service_client
-    try:
-        new_container = blob_service_client.create_container(container_name)
-        time.sleep(35)
-    except ResourceExistsError:
-        pass
-    blob_client = new_container.get_blob_client(
-        container_name, Path(upload_file_path).name)
+
+    blob_client = blob_service_client.get_blob_client(
+        container=container_name, blob=Path(upload_file_path).name)
     try:
         with open(upload_file_path, "rb") as data:
             blob_client.upload_blob(data, blob_type="BlockBlob")
@@ -56,9 +52,16 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     database_name = req.params.get("database_name")
     container_name = req.params.get("container_name")
     backup_path = ""
+    blob_service_client = BlobServiceClient.from_connection_string(
+        os.getenv('STORAGE_CONNECTION_STRING'))
+
     if not container_name:
         container_name = database_name
     try:
+        try:
+            blob_service_client.create_container(container_name)
+        except ResourceExistsError:
+            pass
         backup_path = dump_database(database_name=database_name)
         upload_backup_container(
             container_name, backup_path)
