@@ -85,7 +85,9 @@ Contains Azure Functions for database operations.
     "value": "/tmp/.cache",
     "slotSetting": false
   }
-]
+   ]
+  ```
+
 
   
 ## building the image:
